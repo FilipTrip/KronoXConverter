@@ -43,3 +43,27 @@ Run executable:
     1. Open KronoXConverter.sln
     2. Select Release mode
     3. Run project
+
+
+## How to use
+
+The user is guided thoughout the process 
+by the application, but here's a summary 
+of the steps after running the application.
+
+Application:
+
+    1. Select calendar file
+    2. Select theme
+    3. Select recalculation interval
+    4. Excel file is generated and application closes
+
+Setup Sheet 1:
+
+    5. Drag Excel file into your Google Drive and open
+    6. Convert to Google Sheets and copy URL
+    8. Open copy of Setup Sheet 2
+
+Setup Sheet 2:
+
+    9. Allow and run script
