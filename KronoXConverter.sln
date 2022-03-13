@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.810.19
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KronoXConverter", "KronoXConverter\KronoXConverter.csproj", "{F3BD9B69-15C9-4AAB-9ABE-E12FBE56F85B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|anycpu = Debug|anycpu
+		Release|anycpu = Release|anycpu
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F3BD9B69-15C9-4AAB-9ABE-E12FBE56F85B}.Debug|anycpu.ActiveCfg = Debug|anycpu
+		{F3BD9B69-15C9-4AAB-9ABE-E12FBE56F85B}.Debug|anycpu.Build.0 = Debug|anycpu
+		{F3BD9B69-15C9-4AAB-9ABE-E12FBE56F85B}.Release|anycpu.ActiveCfg = Release|anycpu
+		{F3BD9B69-15C9-4AAB-9ABE-E12FBE56F85B}.Release|anycpu.Build.0 = Release|anycpu
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {679F912A-1024-4933-99AD-3233CC5BFD43}
+	EndGlobalSection
+EndGlobal

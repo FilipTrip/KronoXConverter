@@ -1,0 +1,18 @@
+color fillHeader 0 0 0
+color fillBackground 35 35 35
+color fillScheduleLight 67 67 67
+color fillScheduleDark 55 55 55
+
+color fontColorHeader 0 255 0
+color fontColorPrimary 0 255 0
+color fontColorSecondary 102 102 102
+color fontColorCourse 0 0 0
+color fontColorSchedule 0 255 0
+color fontColorEnded 0 0 0
+
+colors fillCourses 255 255 255, 217 217 217, 153 153 153, 102 102 102, 70 170 170, 0 255 255, 74 134 232, 255 0 255
+
+string typefaceHeading Share Tech Mono
+string typefacePrimary Ubuntu Mono
+
+string updateButton Update button white.png

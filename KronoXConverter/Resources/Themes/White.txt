@@ -1,0 +1,18 @@
+color fillHeader 255 255 255
+color fillBackground 255 255 255
+color fillScheduleLight 245 245 245
+color fillScheduleDark 230 230 230
+
+color fontColorHeader 0 0 0
+color fontColorPrimary 0 0 0
+color fontColorSecondary 170 170 170
+color fontColorCourse 0 0 0
+color fontColorSchedule 0 0 0
+color fontColorEnded 188 188 188
+
+colors fillCourses 204 204 204, 153 153 153, 0 200 255, 255 255 0, 255 0 255, 0 255 0, 255 130 0, 70 0 255, 255 0 0, 0 155 0, 160 85 70
+
+string typefaceHeading Oswald
+string typefacePrimary Calibri
+
+string updateButton Update button black.png

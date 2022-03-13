@@ -1,0 +1,18 @@
+color fillHeader 71 142 129
+color fillBackground 165 219 202
+color fillScheduleLight 255 255 255
+color fillScheduleDark 237 237 237
+
+color fontColorHeader 255 255 255
+color fontColorPrimary 0 100 80
+color fontColorSecondary 95 165 137
+color fontColorCourse 255 255 255
+color fontColorSchedule 0 140 113
+color fontColorEnded 188 188 188
+
+colors fillCourses 36 101 145, 24 121 147, 12 140 150, 0 160 152, 65 152 101, 167 175 14, 196 135 0
+
+string typefaceHeading Dosis
+string typefacePrimary Calibri
+
+string updateButton Update button white.png
