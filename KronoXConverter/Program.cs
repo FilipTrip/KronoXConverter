@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using OfficeOpenXml;
 using System.Linq;
-using System.Reflection;
 
 //////////////////////////////////////////
 //
@@ -40,10 +39,14 @@ namespace KronoXConverter
 
         public static void Main(string[] args)
         {
-            //try
-            {
-                Launch();
 
+#if !DEBUG
+            try
+#endif
+            {
+
+                Launch();
+                int a = int.Parse("a");
                 Search:
                 retry = false;
                 SearchForCalendarFiles();
@@ -60,12 +63,13 @@ namespace KronoXConverter
                 ConstructExcelFile(events);
                 //Process.Start(excelFilePath.ToDirectory());
             }
-            //catch (Exception e)
+#if !DEBUG
+            catch (Exception e)
             {
-                //WriteLine(error, "Unexpected fatal error");
-                //WriteLine(secondary, e.ToString());
+                WriteLine(error, "Unexpected fatal error");
+                WriteLine(secondary, e.ToString());
             }
-
+#endif
             Exit();
         }
 
@@ -79,12 +83,8 @@ namespace KronoXConverter
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             resourcesFolder = Environment.CurrentDirectory;
-            resourcesFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            WriteLine(primary, resourcesFolder);
             resourcesFolder = resourcesFolder.Remove(resourcesFolder.LastIndexOf("KronoXConverter") + 15);
-            WriteLine(primary, resourcesFolder);
             resourcesFolder += "/Resources";
-            WriteLine(primary, resourcesFolder);
 
             downloadsFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "/Downloads";
             desktopFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -244,6 +244,7 @@ namespace KronoXConverter
             WriteLine(primary, "to try all of them and decide later");
 
             themeFilePaths = Directory.GetFiles(resourcesFolder + "/Themes").Where(item => item.EndsWith(".txt")).ToList();
+            themeFilePaths.Sort();
             for (int i = 0; i < themeFilePaths.Count; ++i)
             {
                 Write(option, (i + 1) + " ");

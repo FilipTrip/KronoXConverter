@@ -38,7 +38,6 @@ namespace KronoXConverter
 
         private static IExcelConditionalFormattingExpression conditionalFormatting;
 
-
         /// <summary>
         /// Initializes and prepares setup package
         /// </summary>

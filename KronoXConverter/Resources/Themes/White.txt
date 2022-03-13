@@ -10,7 +10,7 @@ color fontColorCourse 0 0 0
 color fontColorSchedule 0 0 0
 color fontColorEnded 188 188 188
 
-colors fillCourses 204 204 204, 153 153 153, 0 200 255, 255 255 0, 255 0 255, 0 255 0, 255 130 0, 70 0 255, 255 0 0, 0 155 0, 160 85 70
+colors fillCourses 0 200 255, 255 255 0, 255 0 255, 0 255 0, 255 130 0, 70 0 255, 255 0 0, 0 155 0, 160 85 70, 153 153 153
 
 string typefaceHeading Oswald
 string typefacePrimary Calibri
