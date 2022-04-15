@@ -39,14 +39,12 @@ namespace KronoXConverter
 
         public static void Main(string[] args)
         {
-
 #if !DEBUG
             try
 #endif
             {
-
                 Launch();
-                int a = int.Parse("a");
+
                 Search:
                 retry = false;
                 SearchForCalendarFiles();
@@ -86,8 +84,8 @@ namespace KronoXConverter
             resourcesFolder = resourcesFolder.Remove(resourcesFolder.LastIndexOf("KronoXConverter") + 15);
             resourcesFolder += "/Resources";
 
-            downloadsFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "/Downloads";
             desktopFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            downloadsFolder = desktopFolder.Replace("Desktop", "Downloads");
 
             events = new List<Event>();
             selectedThemeFilePaths = new List<string>();

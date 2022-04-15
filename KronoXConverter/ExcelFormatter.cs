@@ -85,7 +85,7 @@ namespace KronoXConverter
                     week = ev.week;
                 }
 
-                //Add event to current eventWeek
+                // Add event to current eventWeek
                 eventWeeks[weekIndex].Add(ev);
             }
 
