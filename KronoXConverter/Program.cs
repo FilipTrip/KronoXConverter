@@ -9,7 +9,7 @@ using System.Linq;
 //
 //  Program.cs
 //  KronoX Converter by Filip Tripkovic
-//  Last updated 2022-03-13
+//  Last updated 2022-07-30
 //
 //////////////////////////////////////////
 
@@ -25,12 +25,14 @@ namespace KronoXConverter
         public static readonly ConsoleColor error      = ConsoleColor.Red;
 
         public static string resourcesFolder { get; private set; }
+
         private static string downloadsFolder, desktopFolder;
-        private static string calendarFilePath, excelFilePath;
+        private static string excelFilePath;
         private static string input;
         private static string recalculation;
         private static bool fileFound, retry, firstFailedSearch;
         private static List<Event> events;
+        private static List<string> calendarFilePaths;
         private static List<string> themeFilePaths;
         private static List<string> selectedThemeFilePaths;
 
@@ -57,14 +59,14 @@ namespace KronoXConverter
                 SelectRecalculation();
                 ResolveAlreadyExistingFile();
 
-                ReadCalendarFile(events);
-                ConstructExcelFile(events);
+                ReadCalendarFiles();
+                ConstructExcelFile();
                 //Process.Start(excelFilePath.ToDirectory());
             }
 #if !DEBUG
             catch (Exception e)
             {
-                WriteLine(error, "Unexpected fatal error");
+                WriteLine(error, "Unexpected error");
                 WriteLine(secondary, e.ToString());
             }
 #endif
@@ -76,7 +78,7 @@ namespace KronoXConverter
         {
             WriteLine(launchExit, "\nKronoX Converter");
             WriteLine(secondary, "By Filip Tripkovic");
-            WriteLine(primary, "\nA free open-source console application created with the specific purpose of re-structuring KronoX schedules");
+            WriteLine(primary, "A free open-source console application created with the purpose of re-structuring and combining KronoX schedules");
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -88,6 +90,7 @@ namespace KronoXConverter
             downloadsFolder = desktopFolder.Replace("Desktop", "Downloads");
 
             events = new List<Event>();
+            calendarFilePaths = new List<string>();
             selectedThemeFilePaths = new List<string>();
             firstFailedSearch = true;
         }
@@ -109,8 +112,7 @@ namespace KronoXConverter
                         fileFound = true;
                         WriteLine(primary, "\nCalendar file found: " + file.Substring(file.LastIndexOf("/") + 1));
                         WriteLine(secondary, "At: " + file);
-                        ClearLine();
-                        Write(primary, "Do you want to use this file?");
+                        Write(primary, "Do you want to use this file" + (calendarFilePaths.Count == 0 ? "?" : " as well?"));
                         WriteLine(option, " y/n");
 
                         UserInput:
@@ -120,8 +122,7 @@ namespace KronoXConverter
 
                         if (input == "y")
                         {
-                            calendarFilePath = file;
-                            break;
+                            calendarFilePaths.Add(file);
                         }
 
                         else if (input != "n")
@@ -136,21 +137,21 @@ namespace KronoXConverter
             }
         }
 
-        // Step 3
+        // Step 2.1
         private static void NoCalendarFileFound()
         {
             if (fileFound)
                 // Continue to EnterCalendarFilePathManually()
                 return;
 
-            Write(primary, "\nNo calendar file found in downloads or desktop");
+            Write(primary, "\nNo calendar files found in downloads or desktop");
 
             if (!firstFailedSearch)
                 // Continue to EnterCalendarFilePathManually()
                 return;
 
             firstFailedSearch = false;
-            Write(primary, "\nHave you downloaded a calendar file from KronoX website yet?");
+            Write(primary, "\nHave you downloaded a calendar file from KronoX's website yet?");
             WriteLine(option, " y/n ");
 
             UserInput:
@@ -160,9 +161,9 @@ namespace KronoXConverter
 
             if (input == "n")
             {
-                Write(primary, "\nYou must download a calendar file from KronoX and place it" +
-                   " in your downloads folder or on your desktop. Continue by locating your schedule," +
-                   " download it by clicking 'Get iCal file' / 'Hämta iCal fil', then enter");
+                Write(primary, "\nYou must download one or more calendar files from KronoX and place them" +
+                   " in your downloads folder or on your desktop. Continue by locating your schedules," +
+                   " download them by clicking 'Get iCal file' / 'Hämta iCal fil', then enter");
                 Write(option, " retry ");
                 WriteLine(primary, "to do another search");
 
@@ -189,16 +190,16 @@ namespace KronoXConverter
             // If "y": Continue to EnterCalendarFilePathManually()
         }
 
-        // Step 4
+        // Step 2.2
         private static void EnterCalendarFilePathManually()
         {
-            if (calendarFilePath != null)
+            if (calendarFilePaths.Count != 0)
                 return;
 
             if (fileFound)
                 Write(primary, "\nNo more calendar files found in downloads or desktop");
 
-            Write(primary, "\nEnter path for calender file manually, or move the file to downloads or desktop and enter");
+            Write(primary, "\nEnter path for calender file manually, or move the file(s) to downloads or desktop, then enter");
             Write(option, " retry ");
             WriteLine(primary, "to do another search");
 
@@ -219,12 +220,12 @@ namespace KronoXConverter
                     goto UserInput;
                 }
 
-                calendarFilePath = input;
+                calendarFilePaths.Add(input);
             }
 
             else if (File.Exists(input + ".ics"))
             {
-                calendarFilePath = input + ".ics";
+                calendarFilePaths.Add(input + ".ics");
             }
 
             else
@@ -234,12 +235,12 @@ namespace KronoXConverter
             }
         }
 
-        // Step 5
+        // Step 3
         private static void SelectTheme()
         {
             Write(primary, "\nSelect a theme by entering a number, or enter");
             Write(option, " all ");
-            WriteLine(primary, "to try all of them and decide later");
+            WriteLine(primary, "to try all themes and decide later");
 
             themeFilePaths = Directory.GetFiles(resourcesFolder + "/Themes").Where(item => item.EndsWith(".txt")).ToList();
             themeFilePaths.Sort();
@@ -267,7 +268,7 @@ namespace KronoXConverter
             }
         }
 
-        // Step 6
+        // Step 4
         private static void SelectRecalculation()
         {
             Write(primary, "\nSelect recalculation interval");
@@ -311,10 +312,10 @@ namespace KronoXConverter
             // If "1" or "2" or "3": Continue to ResolveAlreadyExistingFile()
         }
 
-        // Step 7
+        // Step 5
         private static void ResolveAlreadyExistingFile()
         {
-            excelFilePath = calendarFilePath.ToDirectory() + "/Setup Sheet 1.xlsx";
+            excelFilePath = calendarFilePaths[0].ToDirectory() + "/Setup Sheet 1.xlsx";
 
             if (!File.Exists(excelFilePath))
                 return;
@@ -342,14 +343,18 @@ namespace KronoXConverter
             }
         }
 
-        // Step 8
-        private static void ReadCalendarFile(List<Event> events)
+        // Step 6
+        private static void ReadCalendarFiles()
         {
-            CalendarReader.ReadCalendarFile(events, calendarFilePath);
+            foreach (string calendarFilePath in calendarFilePaths)
+                CalendarReader.ReadCalendarFile(events, calendarFilePath);
+
+            events.Sort((a, b) => DateTime.Compare(a.start, b.start));
+            events = events.Distinct().ToList();
         }
 
-        // Step 9
-        private static void ConstructExcelFile(List<Event> events)
+        // Step 7
+        private static void ConstructExcelFile()
         {
             WriteLine(primary, "\nConstructing " + excelFilePath.ToFileName(true) + " ...");
             WriteLine(secondary, "At: " + excelFilePath);
@@ -380,7 +385,7 @@ namespace KronoXConverter
                 " into your Google Drive, open it, and follow the instructions to complete the setup");
         }
 
-        // Exit
+        // Step 8
         private static void Exit()
         {
             WriteLine(launchExit, "\nKronoX Converter closing");

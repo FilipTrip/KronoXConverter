@@ -12,7 +12,7 @@ using OfficeOpenXml.Drawing;
 //
 //  ExcelFormatter.cs
 //  KronoX Converter by Filip Tripkovic
-//  Last updated 2022-03-13
+//  Last updated 2022-07-30
 //
 //////////////////////////////////////////
 
@@ -127,7 +127,7 @@ namespace KronoXConverter
             foreach (string course in events.Select(item => item.course).Distinct().ToList())
             {
                 // Make abbreviation and remove any trailing spaces
-                string abbreviation = course.Substring(0, 5);
+                string abbreviation = course.Substring(0, 10);
                 while (abbreviation.Length > 0 && abbreviation[abbreviation.Length - 1] == ' ')
                     abbreviation = abbreviation.Remove(abbreviation.Length - 1);
 
@@ -452,7 +452,7 @@ namespace KronoXConverter
 
             // Button
             ExcelPicture updateButton = worksheet.Drawings[0] as ExcelPicture;
-            updateButton.Image = Image.FromFile(Program.resourcesFolder + "/Images/" + Theme.updateButton);
+            updateButton.Image.SetImage(Program.resourcesFolder + "/Images/" + Theme.updateButton);
 
             // Headings fonts
             worksheet.Cells["D5" ].Style.Font.Name = Theme.typefaceHeading;

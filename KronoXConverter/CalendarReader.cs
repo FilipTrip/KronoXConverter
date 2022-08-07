@@ -7,7 +7,7 @@ using System.Globalization;
 //
 //  CalendarReader.cs
 //  KronoX Converter by Filip Tripkovic
-//  Last updated 2022-02-27
+//  Last updated 2022-07-30
 //
 //////////////////////////////////////////
 
@@ -16,14 +16,71 @@ namespace KronoXConverter
     public static class CalendarReader
     {
         /// <summary>
+        /// Token to index
+        /// </summary>
+        private enum SummaryToken { Course, Sign, Description, Resourse, Programme };
+
+        /// <summary>
+        /// Tokens used by KronoX to divide summaries
+        /// </summary>
+        private static readonly string[] summaryTokensSwe = { "Kurs.grp: ", "Sign: ", "Moment: ", "Hjälpm.: ", "Program: " };
+
+        /// <summary>
+        /// Tokens used by KronoX to divide summaries
+        /// </summary>
+        private static readonly string[] summaryTokensEng = { "Coursegrp: ", "Sign: ", "Description: ", "Resourse: ", "Programme: " };
+
+        /// <summary>
         /// Returns a substring which lies between the provided start and end string
         /// </summary>
         private static string SubstringBetween(string s, string start, string end)
         {
+            if (!s.Contains(start) || !s.Contains(end))
+                return s;
+
             int startPos = s.IndexOf(start) + start.Length;
             int endPos = s.IndexOf(end, startPos);
 
             return s.Substring(startPos, endPos - startPos);
+        }
+
+        /// <summary>
+        /// Extracts and returns the context of the provided token, if present in the summary
+        /// </summary>
+        private static string ExtractFromSummary(string summary, SummaryToken summaryToken)
+        {
+            int i = (int)summaryToken;
+            int startPos;
+            int tokenPos;
+            int endPos = int.MaxValue;
+
+            if (summary.Contains(summaryTokensSwe[i]))
+                startPos = summary.IndexOf(summaryTokensSwe[i]) + summaryTokensSwe[i].Length;
+
+            else if (summary.Contains(summaryTokensEng[i]))
+                startPos = summary.IndexOf(summaryTokensEng[i]) + summaryTokensEng[i].Length;
+
+            else
+                return "";
+
+            foreach (string token in summaryTokensSwe)
+            {
+                tokenPos = summary.IndexOf(token);
+                if (tokenPos > startPos && tokenPos < endPos)
+                    endPos = tokenPos;
+            }
+
+            foreach (string token in summaryTokensEng)
+            {
+                tokenPos = summary.IndexOf(token);
+                if (tokenPos > startPos && tokenPos < endPos)
+                    endPos = tokenPos;
+            }
+
+            if (endPos == int.MaxValue)
+                return summary.Substring(startPos);
+
+            return summary.Substring(startPos, endPos - startPos);
         }
 
         /// <summary>
@@ -133,13 +190,11 @@ namespace KronoXConverter
         
                 else if (line.StartsWith("SUMMARY:"))
                 {
-                    // Divide summary into multiple strings
-                    ev.course      = SubstringBetween(line, "Kurs.grp: ", ",");
-                    ev.teacher     = SubstringBetween(line, "Sign: ", " Moment:");
-                    ev.description = SubstringBetween(line, "Moment: ", " Program:");
-            
-                    if (ev.description.Contains(" Hjälpm.: "))
-                        ev.description = SubstringBetween(line, "Moment: ", " Hjälpm.:");
+                    ev.course      = ExtractFromSummary(line, SummaryToken.Course);
+                    ev.teacher     = ExtractFromSummary(line, SummaryToken.Sign);
+                    ev.description = ExtractFromSummary(line, SummaryToken.Description);
+
+                    int number
                 }
         
                 /*

@@ -37,7 +37,7 @@
     <Reference Include="mscorlib" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="EPPlus">
-      <HintPath>..\packages\EPPlus.5.8.6\lib\net45\EPPlus.dll</HintPath>
+      <HintPath>..\packages\EPPlus.6.0.6\lib\net462\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System.configuration" />
@@ -47,6 +47,12 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Xml" />
+    <Reference Include="EPPlus.Interfaces">
+      <HintPath>..\packages\EPPlus.Interfaces.6.0.0\lib\net452\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.System.Drawing">
+      <HintPath>..\packages\EPPlus.System.Drawing.6.0.0\lib\net452\EPPlus.System.Drawing.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
