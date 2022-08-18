@@ -7,7 +7,7 @@ using System.Globalization;
 //
 //  CalendarReader.cs
 //  KronoX Converter by Filip Tripkovic
-//  Last updated 2022-07-30
+//  Last updated 2022-08-18
 //
 //////////////////////////////////////////
 
@@ -29,6 +29,11 @@ namespace KronoXConverter
         /// Tokens used by KronoX to divide summaries
         /// </summary>
         private static readonly string[] summaryTokensEng = { "Coursegrp: ", "Sign: ", "Description: ", "Resourse: ", "Programme: " };
+
+        /// <summary>
+        /// 0-9
+        /// </summary>
+        private static readonly char[] numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
         /// <summary>
         /// Returns a substring which lies between the provided start and end string
@@ -78,13 +83,13 @@ namespace KronoXConverter
             }
 
             if (endPos == int.MaxValue)
-                return summary.Substring(startPos);
+                return summary.Substring(startPos).RemoveTrailingSpaces();
 
-            return summary.Substring(startPos, endPos - startPos);
+            return summary.Substring(startPos, endPos - startPos).RemoveTrailingSpaces();
         }
 
         /// <summary>
-        /// Reads the 
+        /// Reads the provided calendar file and adds an event to the list for each event in the calendar
         /// </summary>
         public static void ReadCalendarFile(List<Event> events, string filePath)
         {
@@ -190,11 +195,16 @@ namespace KronoXConverter
         
                 else if (line.StartsWith("SUMMARY:"))
                 {
+                    // Separate information from summary
+
                     ev.course      = ExtractFromSummary(line, SummaryToken.Course);
                     ev.teacher     = ExtractFromSummary(line, SummaryToken.Sign);
                     ev.description = ExtractFromSummary(line, SummaryToken.Description);
 
-                    int number
+                    int number = ev.course.IndexOfAny(numbers, 3);
+                    
+                    if (i > 0 && ev.course[number - 1] == ' ' && ev.course[number - 2] == ',')
+                        ev.course = ev.course.Substring(0, number - 2);
                 }
         
                 /*
@@ -214,18 +224,7 @@ namespace KronoXConverter
                     ev.endHour = end.Hour;
                     ev.endMin = end.Minute;
                     ev.week = calendar.GetWeekOfYear(ev.start, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-
                     ev.start = ev.start.ToLocalTime();
-
-                    // Write event to console
-
-                    /*Console.WriteLine(
-                        ev.week
-                        + " | " + ev.start.ToString("ddd | yyyy-MM-dd | HH:mm")
-                        +  "-"  + ev.endHour.ToString("00") + ":" + ev.endMin.ToString("00")
-                        + " | " + ev.course
-                        + " | " + ev.description
-                        + " | " + ev.location);*/
 
                     // Add event to list
                     events.Add(ev);

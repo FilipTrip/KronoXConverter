@@ -9,7 +9,7 @@ using System.Linq;
 //
 //  Program.cs
 //  KronoX Converter by Filip Tripkovic
-//  Last updated 2022-07-30
+//  Last updated 2022-08-18
 //
 //////////////////////////////////////////
 
@@ -60,6 +60,7 @@ namespace KronoXConverter
                 ResolveAlreadyExistingFile();
 
                 ReadCalendarFiles();
+                IncludeCourses();
                 ConstructExcelFile();
                 //Process.Start(excelFilePath.ToDirectory());
             }
@@ -78,7 +79,7 @@ namespace KronoXConverter
         {
             WriteLine(launchExit, "\nKronoX Converter");
             WriteLine(secondary, "By Filip Tripkovic");
-            WriteLine(primary, "A free open-source console application created with the purpose of re-structuring and combining KronoX schedules");
+            WriteLine(secondary, "A free open-source console application created with the purpose of re-structuring and combining KronoX schedules");
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -349,11 +350,61 @@ namespace KronoXConverter
             foreach (string calendarFilePath in calendarFilePaths)
                 CalendarReader.ReadCalendarFile(events, calendarFilePath);
 
-            events.Sort((a, b) => DateTime.Compare(a.start, b.start));
             events = events.Distinct().ToList();
+            events.Sort((ev1, ev2) => DateTime.Compare(ev1.start, ev2.start));
         }
 
         // Step 7
+        private static void IncludeCourses()
+        {
+            List<string> courses = events.Select(ev => ev.course).Distinct().ToList();
+            courses.Sort();
+
+            WriteLine(primary, "\nCourses found: " + courses.Count);
+            WriteLine(primary, "Select whether or not to include the following courses:");
+
+            foreach (string course in courses)
+            {
+                List<Event> eventsInCourse = events.Where(ev => ev.course == course).ToList();
+
+                Write(primary, " - " + course);
+                Write(secondary, " (" + eventsInCourse.Count + " events)");
+                Write(option, " y/n ");
+
+                if (eventsInCourse.Count < 4)
+                {
+                    int left = Console.CursorLeft;
+                    int top = Console.CursorTop;
+
+                    foreach (Event ev in eventsInCourse)
+                        Write(secondary, "\n" + ev.start.ToString("   yyyy-MM-dd ") + ev.description);
+
+                    Console.SetCursorPosition(left, top - eventsInCourse.Count);
+                }
+
+                UserInput:
+                Console.ForegroundColor = userInput;
+                input = Console.ReadKey().KeyChar.ToString().ToLower();
+                Console.WriteLine();
+
+                if (input == "n")
+                    events.RemoveAll(ev => ev.course == course);
+
+                else if (input != "y")
+                {
+                    WriteLine(error, "Invalid input");
+                    goto UserInput;
+                }
+
+                if (eventsInCourse.Count < 4)
+                {
+                    Console.SetCursorPosition(Console.WindowWidth - 1, Console.WindowHeight - 1);
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        // Step 8
         private static void ConstructExcelFile()
         {
             WriteLine(primary, "\nConstructing " + excelFilePath.ToFileName(true) + " ...");
@@ -385,7 +436,7 @@ namespace KronoXConverter
                 " into your Google Drive, open it, and follow the instructions to complete the setup");
         }
 
-        // Step 8
+        // Step 9
         private static void Exit()
         {
             WriteLine(launchExit, "\nKronoX Converter closing");

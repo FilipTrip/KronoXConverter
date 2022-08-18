@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 //
 //  Extensions.cs
 //  KronoX Converter by Filip Tripkovic
-//  Last updated 2022-03-02
+//  Last updated 2022-08-18
 //
 //////////////////////////////////////////
 
@@ -62,6 +62,21 @@ namespace KronoXConverter
                 filePath = filePath.ToDirectory() + "/" + name + " (" + i + ")" + filePath.ToExtension();
 
             return filePath;
+        }
+
+        /// <summary>
+        /// Returns a new string in which any number of trailing spaces have been removed
+        /// </summary>
+        public static string RemoveTrailingSpaces(this string s)
+        {
+            if (s[s.Length - 1] != ' ')
+                return s;
+
+            int spaces = 0;
+            for (int i = s.Length - 1; i >= 0 && s[i] == ' '; --i)
+                ++spaces;
+
+            return s.Remove(s.Length - spaces);
         }
     }
 }

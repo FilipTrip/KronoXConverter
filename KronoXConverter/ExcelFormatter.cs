@@ -12,7 +12,7 @@ using OfficeOpenXml.Drawing;
 //
 //  ExcelFormatter.cs
 //  KronoX Converter by Filip Tripkovic
-//  Last updated 2022-07-30
+//  Last updated 2022-08-18
 //
 //////////////////////////////////////////
 
@@ -124,7 +124,7 @@ namespace KronoXConverter
 
             WriteAbbreviation("w", "Week", row++);
             
-            foreach (string course in events.Select(item => item.course).Distinct().ToList())
+            foreach (string course in events.Select(item => item.course).Distinct())
             {
                 // Make abbreviation and remove any trailing spaces
                 string abbreviation = course.Substring(0, 10);
@@ -181,7 +181,7 @@ namespace KronoXConverter
                         // Insert weekday row and leave it empty
                         InsertRowWeekday(++row, expectedDayOfWeek);
 
-                        DateTime expectedDate = eventWeek[eventIndex].start.AddDays(DayIndex(expectedDayOfWeek) - DayIndex(eventWeek[0].start.DayOfWeek));
+                        DateTime expectedDate = eventWeek[eventIndex].start.AddDays(DayIndex(expectedDayOfWeek) - DayIndex(eventWeek[eventIndex].start.DayOfWeek));
                         cells["D" + row].Formula = "PROPER(TEXT(DATEVALUE(\"" + expectedDate.ToString("yyyy-MM-dd") + "\"); \"DDD\"))";
                         cells["E" + row].Value = expectedDate.Day;
 
