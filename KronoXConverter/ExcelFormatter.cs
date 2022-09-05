@@ -12,7 +12,7 @@ using OfficeOpenXml.Drawing;
 //
 //  ExcelFormatter.cs
 //  KronoX Converter by Filip Tripkovic
-//  Last updated 2022-08-18
+//  Last updated 2022-09-05
 //
 //////////////////////////////////////////
 
@@ -257,6 +257,7 @@ namespace KronoXConverter
                             DateTime dateTime = ev.start.AddDays(DayIndex(expectedDayOfWeek) - DayIndex(ev.start.DayOfWeek));
                             cells["D" + row].Formula = "PROPER(TEXT(DATEVALUE(\"" + dateTime.ToString("yyyy-MM-dd") + "\"); \"DDD\"))";
                             cells["E" + row].Value = dateTime.Day;
+                            AddConditionalFormattingDate(row, dateTime);
 
                             // Expect next day of week
                             expectedDayOfWeek = daysOfWeek[(DayIndex(expectedDayOfWeek) + 1) % daysOfWeek.Count];
